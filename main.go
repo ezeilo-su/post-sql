@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,11 +14,11 @@ import (
 
 // Post is the data model for a blog post
 type Post struct {
-	ID      int       `json:"id,omitempty"`
-	Title   string    `json:"title"`
-	Content string    `json:"content"`
-	Image   string    `json:"image,omitempty"`
-	User    string    `json:"user"`
+	ID        int       `json:"id,omitempty"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Image     string    `json:"image,omitempty"`
+	User      string    `json:"user"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
@@ -102,7 +101,8 @@ func (pc *PostController) CreatePost(w http.ResponseWriter, r *http.Request) {
 	var newPost Post
 	newPost, err = pc.service.CreatePost(post)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println("Error:", err)
+		http.Error(w, "Could not create post", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -117,7 +117,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	fmt.Println("Connected to Postgres")
+	log.Println("Connected to Postgres")
 
 	// Create a service and a controller for posts
 	service := NewPostService(db)
