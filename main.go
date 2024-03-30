@@ -14,13 +14,13 @@ import (
 
 // Post is the data model for a blog post
 type Post struct {
-	ID        int       `json:"id,omitempty"`
+	ID        int       `json:"id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	Image     string    `json:"image,omitempty"`
 	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // PostService is the interface for the CRUD operations on posts
@@ -63,7 +63,7 @@ func (ps *PostServiceImpl) CreatePost(post Post) (Post, error) {
 	query := `
 		INSERT INTO posts (title, content, image, "user", created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id, title, content, image, "user", created_at, updated_at;
+		RETURNING id;
 	`
 	var id int
 	post.CreatedAt = time.Now()
@@ -72,7 +72,7 @@ func (ps *PostServiceImpl) CreatePost(post Post) (Post, error) {
 		context.Background(),
 		query,
 		post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt,
-	).Scan(&id, &post.Title, &post.Content, &post.Image, &post.User, &post.CreatedAt, &post.UpdatedAt)
+	).Scan(&id)
 	if err != nil {
 		return Post{}, err
 	}
