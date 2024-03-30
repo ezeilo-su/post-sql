@@ -39,7 +39,9 @@ func NewPostService(db *sql.DB) PostService {
 }
 
 func createTable(client *sql.DB, name string) error {
-	_, err := client.Query("CREATE TABLE IF NOT EXISTS " + name + ` (
+	_, err := client.QueryContext(
+		context.Background(),
+		"CREATE TABLE IF NOT EXISTS "+name+` (
     id SERIAL PRIMARY KEY,
     title VARCHAR(300),
     content VARCHAR(1000),
