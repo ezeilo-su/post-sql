@@ -16,7 +16,6 @@ import (
 
 func main() {
 	dbURL := os.Getenv("DATABASE_URL")
-	// db, err := sqlx.Open("postgres", dbURL)
 	db, err := sqlx.Connect("postgres", dbURL)
 
 	if err != nil {
