@@ -5,7 +5,7 @@ CREATE SCHEMA IF NOT EXISTS golesson;
 
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS posts (
-    id SERIAL PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT,
     image VARCHAR(255),

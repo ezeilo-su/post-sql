@@ -1,6 +1,4 @@
-/db/db_copy.go
-/db/models_copy.go
-/db/posts.sql_copy.go
-dummy.go
+dummy
 sqlc.yaml
 go.sum
+bin
