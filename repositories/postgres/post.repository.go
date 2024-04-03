@@ -39,12 +39,14 @@ func NewPostRepository(db *sqlx.DB) PostRepository {
 
 // Create creates a new post in the database
 func (r *PostRepositoryImpl) Create(ctx context.Context, post *CreatePostParams) (*models.PostModel, error) {
-	var d *models.PostModel
-	err := r.db.QueryRow(createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(d)
+	var d models.PostModel
+	err := r.db.QueryRowContext(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
+		&d.UID, &d.Title, &d.Content, &d.Image, &d.User, &d.CreatedAt, &d.UpdatedAt,
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return d, nil
+	return &d, nil
 }

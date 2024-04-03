@@ -17,7 +17,7 @@ type CreatePostParams struct {
 }
 
 type Post struct {
-	UID       int       `json:"uid"`
+	UID       string    `json:"uid"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	User      string    `json:"user"`
@@ -46,8 +46,8 @@ func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) 
 		Title:     p.Title,
 		Content:   p.Content,
 		User:      p.User,
-		CreatedAt: p.CreatedAt,
-		UpdatedAt: p.UpdatedAt,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 		Image:     p.Image,
 	}
 

@@ -4,7 +4,7 @@ import "time"
 
 // Post is the data model for a blog post
 type PostModel struct {
-	UID       int       `db:"id"`
+	UID       string    `db:"id"`
 	Title     string    `db:"title"`
 	Content   string    `db:"content"`
 	User      string    `db:"user"`
