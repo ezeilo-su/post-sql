@@ -15,12 +15,12 @@ RETURNING *;
 `
 
 type CreatePostParams struct {
-	Title     string    `json:"title" db:"title"`
-	Content   string    `json:"content" db:"content"`
-	User      string    `json:"user" db:"user"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
-	Image     string    `json:"image,omitempty" db:"image,omitempty"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	User      string    `json:"user"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Image     string    `json:"image,omitempty"`
 }
 
 type PostRepository interface {

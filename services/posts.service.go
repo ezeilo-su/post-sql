@@ -11,8 +11,8 @@ type CreatePostParams struct {
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	Image     string    `json:"image,omitempty"`
 }
 
