@@ -16,6 +16,9 @@ import (
 
 func main() {
 	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatalln("DATABASE_URL not set in the ENV")
+	}
 	db, err := sqlx.Connect("postgres", dbURL)
 
 	if err != nil {
@@ -32,8 +35,13 @@ func main() {
 	router.HandleFunc("POST /posts", pc.CreatePost)
 	router.Handle("/", http.NotFoundHandler())
 
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		log.Fatalln("SERVER_PORT must be set in the ENV")
+	}
+	
 	server := &http.Server{
-		Addr:         ":80",
+		Addr:         ":" + port,
 		Handler:      router,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
