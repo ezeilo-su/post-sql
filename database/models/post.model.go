@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// Post is the data model for a blog post
+// PostModel is the data model for a blog post
 type PostModel struct {
 	UID       string    `db:"id"`
 	Title     string    `db:"title"`

@@ -25,13 +25,11 @@ func main() {
 	defer db.Close()
 	log.Println("Connected to Postgres")
 
-	service := services.NewPostService(repositories.NewPostRepository(db))
-	// Create a service and a controller for posts
-	controller := controllers.NewPostController(service)
+	ps := services.NewPostService(repositories.NewPostRepository(db))
+	pc := controllers.NewPostController(ps)
 
-	// Create a router and define the routes for posts
 	router := http.NewServeMux()
-	router.HandleFunc("POST /posts", controller.CreatePost)
+	router.HandleFunc("POST /posts", pc.CreatePost)
 	router.Handle("/", http.NotFoundHandler())
 
 	server := &http.Server{

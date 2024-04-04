@@ -32,7 +32,7 @@ type PostRepositoryImpl struct {
 	db *sqlx.DB
 }
 
-// NewPostRepository creates a new PostRepository instance
+// NewPostRepository creates a new type of PostRepository
 func NewPostRepository(db *sqlx.DB) PostRepository {
 	return &PostRepositoryImpl{db: db}
 }
