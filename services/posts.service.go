@@ -35,7 +35,7 @@ type PostServiceImpl struct {
 	postRepo repositories.PostRepository
 }
 
-// NewPostService creates a new PostService object
+// NewPostService creates a new PostService type
 func NewPostService(postRepo repositories.PostRepository) PostService {
 	return &PostServiceImpl{postRepo: postRepo}
 }
