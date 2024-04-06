@@ -1,4 +1,4 @@
-module postsql
+module github.com/sundayezeilo/post-spql
 
 go 1.22
 

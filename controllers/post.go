@@ -3,9 +3,9 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"github.com/sundayezeilo/post-spql/services"
 	"log"
 	"net/http"
-	services "postsql/services"
 )
 
 // PostController is the controller for post resource

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	repositories "postsql/repositories/postgres"
+	"github.com/sundayezeilo/post-spql/repositories/postgres"
 )
 
 type CreatePostParams struct {

@@ -1,8 +1,8 @@
-package postrepository
+package repositories
 
 import (
 	"context"
-	models "postsql/database/models"
+	"github.com/sundayezeilo/post-spql/database/models"
 	"time"
 
 	"github.com/jmoiron/sqlx"

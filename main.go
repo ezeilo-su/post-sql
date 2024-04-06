@@ -9,9 +9,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	controllers "postsql/controllers"
-	repositories "postsql/repositories/postgres"
-	services "postsql/services"
+	"github.com/sundayezeilo/post-spql/controllers"
+	"github.com/sundayezeilo/post-spql/repositories/postgres"
+	"github.com/sundayezeilo/post-spql/services"
 )
 
 func main() {
@@ -39,7 +39,7 @@ func main() {
 	if port == "" {
 		log.Fatalln("SERVER_PORT must be set in the ENV")
 	}
-	
+
 	server := &http.Server{
 		Addr:         ":" + port,
 		Handler:      router,
