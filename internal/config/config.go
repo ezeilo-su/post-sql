@@ -30,7 +30,7 @@ func GetConfig() *Config {
 		port = "8000"
 	}
 
-	c.ServerPort = ":" + port
+	c.ServerPort = port
 
 	rTimeout, ok := os.LookupEnv("READ_TIMEOUT")
 

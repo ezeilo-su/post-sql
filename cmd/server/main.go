@@ -31,7 +31,7 @@ func main() {
 	router.HandleFunc("POST /posts", pc.CreatePost)
 
 	server := &http.Server{
-		Addr:         config.ServerPort,
+		Addr:         ":" + config.ServerPort,
 		Handler:      router,
 		ReadTimeout:  config.ReadTimeout,
 		WriteTimeout: config.WriteTimeout,
