@@ -31,7 +31,6 @@ func main() {
 
 	router := http.NewServeMux()
 	router.HandleFunc("POST /posts", pc.CreatePost)
-	router.Handle("/", http.NotFoundHandler())
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
