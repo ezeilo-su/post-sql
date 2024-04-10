@@ -32,16 +32,11 @@ func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("POST /posts", pc.CreatePost)
 
-	port := os.Getenv("SERVER_PORT")
-	if port == "" {
-		log.Fatalln("SERVER_PORT must be set in the ENV")
-	}
-
 	server := &http.Server{
-		Addr:         ":" + port,
+		Addr:         ":" + config.ServerPort,
 		Handler:      router,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  config.ReadTimeout,
+		WriteTimeout: config.WriteTimeout,
 	}
 	log.Fatal(server.ListenAndServe())
 }
