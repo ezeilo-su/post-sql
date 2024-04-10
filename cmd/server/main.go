@@ -9,17 +9,15 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"github.com/sundayezeilo/post-spql/controllers"
-	"github.com/sundayezeilo/post-spql/repositories/postgres"
-	"github.com/sundayezeilo/post-spql/services"
+	"github.com/sundayezeilo/post-spql/internal/api/handlers"
+	c "github.com/sundayezeilo/post-spql/internal/config"
+	"github.com/sundayezeilo/post-spql/internal/repositories/postgres"
+	"github.com/sundayezeilo/post-spql/internal/services"
 )
 
 func main() {
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		log.Fatalln("DATABASE_URL not set in the ENV")
-	}
-	db, err := sqlx.Connect("postgres", dbURL)
+	config := c.GetConfig()
+	db, err := sqlx.Connect("postgres", config.PostgresURL)
 
 	if err != nil {
 		log.Fatalln(err)
@@ -29,7 +27,7 @@ func main() {
 	log.Println("Connected to Postgres")
 
 	ps := services.NewPostService(repositories.NewPostRepository(db))
-	pc := controllers.NewPostController(ps)
+	pc := api.NewPostHandler(ps)
 
 	router := http.NewServeMux()
 	router.HandleFunc("POST /posts", pc.CreatePost)

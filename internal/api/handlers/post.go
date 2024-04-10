@@ -1,25 +1,25 @@
-package controllers
+package api
 
 import (
 	"context"
 	"encoding/json"
-	"github.com/sundayezeilo/post-spql/services"
+	"github.com/sundayezeilo/post-spql/internal/services"
 	"log"
 	"net/http"
 )
 
-// PostController is the controller for post resource
-type PostController struct {
+// PostHandler is the controller for post resource
+type PostHandler struct {
 	service services.PostService
 }
 
-// NewPostController creates a new PostController type
-func NewPostController(service services.PostService) *PostController {
-	return &PostController{service}
+// NewPostHandler creates a new PostHandler type
+func NewPostHandler(service services.PostService) *PostHandler {
+	return &PostHandler{service}
 }
 
 // CreatePost handles the incoming POST request to create a new post
-func (pc *PostController) CreatePost(w http.ResponseWriter, r *http.Request) {
+func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	var post services.CreatePostParams
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
