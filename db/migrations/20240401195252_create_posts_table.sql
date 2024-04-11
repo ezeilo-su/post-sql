@@ -1,9 +1,5 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE SCHEMA IF NOT EXISTS golesson;
--- +goose StatementEnd
-
--- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS posts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title VARCHAR(255) NOT NULL,

@@ -36,5 +36,6 @@ func main() {
 		ReadTimeout:  config.ReadTimeout,
 		WriteTimeout: config.WriteTimeout,
 	}
+	log.Println("Server listening on port " + config.ServerPort)
 	log.Fatal(server.ListenAndServe())
 }

@@ -16,25 +16,21 @@ type Config struct {
 
 func GetConfig() *Config {
 	var c Config
-	var ok = false
-	dbUrl, ok := os.LookupEnv("POSTGRES_URL")
-	if !ok {
+	if dbUrl, ok := os.LookupEnv("POSTGRES_URL"); !ok || dbUrl == "" {
 		log.Fatalln("POSTGRES_URL not set in the ENV")
+	} else {
+		c.PostgresURL = dbUrl
 	}
 
-	c.PostgresURL = dbUrl
-
-	port, ok := os.LookupEnv("SERVER_PORT")
-
-	if !ok {
-		port = "8000"
+	if port, ok := os.LookupEnv("SERVER_PORT"); !ok || port == "" {
+		log.Println("SERVER_PORT not set in the ENV " + port)
+		c.ServerPort = "8000"
+	} else {
+		log.Println("PORT: " + port)
+		c.ServerPort = port
 	}
 
-	c.ServerPort = port
-
-	rTimeout, ok := os.LookupEnv("READ_TIMEOUT")
-
-	if !ok {
+	if rTimeout, ok := os.LookupEnv("READ_TIMEOUT"); !ok || rTimeout == "" {
 		c.ReadTimeout = 10 * time.Second
 	} else {
 		num, err := strconv.ParseInt(rTimeout, 10, strconv.IntSize)
@@ -45,9 +41,7 @@ func GetConfig() *Config {
 		}
 	}
 
-	wTimeout, ok := os.LookupEnv("WRITE_TIMEOUT")
-
-	if !ok {
+	if wTimeout, ok := os.LookupEnv("WRITE_TIMEOUT"); !ok || wTimeout == "" {
 		c.WriteTimeout = 10 * time.Second
 	} else {
 		num, err := strconv.ParseInt(wTimeout, 10, strconv.IntSize)

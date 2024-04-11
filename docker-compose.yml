@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.3-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: 'golesson'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'postgres'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_URL: $POSTGRES_URL
+      SERVER_PORT: $SERVER_PORT
+      READ_TIMEOUT: $READ_TIMEOUT
+      WRITE_TIMEOUT: $WRITE_TIMEOUT
+      GOOSE_DRIVER: $GOOSE_DRIVER
+      GOOSE_MIGRATION_DIR: $GOOSE_MIGRATION_DIR
+      GOOSE_DBSTRING: $GOOSE_DBSTRING
+    ports:
+      - "8000:8000"
+    # network_mode: "host"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+volumes:
+  postgres-db-volume:
