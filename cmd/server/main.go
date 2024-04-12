@@ -6,12 +6,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-
-	"github.com/sundayezeilo/post-spql/internal/api/handlers"
-	"github.com/sundayezeilo/post-spql/internal/api/middleware"
+	api "github.com/sundayezeilo/post-spql/internal/api/routes"
 	c "github.com/sundayezeilo/post-spql/internal/config"
-	"github.com/sundayezeilo/post-spql/internal/repositories/postgres"
-	"github.com/sundayezeilo/post-spql/internal/services"
 )
 
 func main() {
@@ -23,13 +19,10 @@ func main() {
 	}
 
 	defer db.Close()
+
 	log.Println("Connected to Postgres")
-
-	ps := services.NewPostService(repositories.NewPostRepository(db))
-	pc := api.NewPostHandler(ps)
-
-	router := http.NewServeMux()
-	router.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
+	dep := api.Dependencies{DB: db}
+	router := api.CreateRoutes(dep)
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,
