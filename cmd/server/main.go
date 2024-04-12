@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/sundayezeilo/post-spql/internal/api/handlers"
+	"github.com/sundayezeilo/post-spql/internal/api/middleware"
 	c "github.com/sundayezeilo/post-spql/internal/config"
 	"github.com/sundayezeilo/post-spql/internal/repositories/postgres"
 	"github.com/sundayezeilo/post-spql/internal/services"
@@ -28,7 +29,7 @@ func main() {
 	pc := api.NewPostHandler(ps)
 
 	router := http.NewServeMux()
-	router.HandleFunc("POST /posts", pc.CreatePost)
+	router.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,
