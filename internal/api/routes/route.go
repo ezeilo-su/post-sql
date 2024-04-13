@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
-	api "github.com/sundayezeilo/post-spql/internal/api/handlers"
+	"github.com/sundayezeilo/post-spql/internal/api/handlers"
 	"github.com/sundayezeilo/post-spql/internal/api/middleware"
-	repositories "github.com/sundayezeilo/post-spql/internal/repositories/postgres"
+	"github.com/sundayezeilo/post-spql/internal/repositories/postgres"
 	"github.com/sundayezeilo/post-spql/internal/services"
 )
 
