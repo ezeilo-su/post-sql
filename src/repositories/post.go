@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"github.com/sundayezeilo/post-spql/internal/models"
+	"github.com/sundayezeilo/post-sql/src/models"
 	"time"
 
 	"github.com/jmoiron/sqlx"

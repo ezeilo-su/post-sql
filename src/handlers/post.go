@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"github.com/sundayezeilo/post-spql/internal/services"
 	"log"
 	"net/http"
+
+	"github.com/sundayezeilo/post-sql/src/services"
 )
 
 // PostHandler is the controller for post resource

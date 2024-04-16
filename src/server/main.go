@@ -6,8 +6,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	api "github.com/sundayezeilo/post-spql/internal/api/routes"
-	c "github.com/sundayezeilo/post-spql/internal/config"
+	c "github.com/sundayezeilo/post-sql/src/config"
+	api "github.com/sundayezeilo/post-sql/src/routes"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 
 	log.Println("Connected to Postgres")
 	dep := api.Dependencies{DB: db}
-	router := api.CreateRoutes(dep)
+	router := api.InitRoutes(dep)
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,
