@@ -29,18 +29,18 @@ type PostRepository interface {
 
 // PostRepositoryImpl handles interactions with the posts table
 type PostRepositoryImpl struct {
-	db *sqlx.DB
+	dbClient *sqlx.DB
 }
 
 // NewPostRepository creates a new type of PostRepository
 func NewPostRepository(db *sqlx.DB) PostRepository {
-	return &PostRepositoryImpl{db: db}
+	return &PostRepositoryImpl{dbClient: db}
 }
 
 // Create creates a new post in the database
 func (r *PostRepositoryImpl) Create(ctx context.Context, post *CreatePostParams) (*models.PostModel, error) {
 	var d models.PostModel
-	err := r.db.QueryRowContext(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
+	err := r.dbClient.QueryRowContext(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
 		&d.UID, &d.Title, &d.Content, &d.Image, &d.User, &d.CreatedAt, &d.UpdatedAt,
 	)
 
