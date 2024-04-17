@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15.3-alpine
-    restart: always
-    environment:
-      POSTGRES_DB: 'golesson'
-      POSTGRES_USER: 'admin'
-      POSTGRES_PASSWORD: 'postgres'
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+  # postgres:
+  #   image: postgres:15.3-alpine
+  #   restart: always
+  #   environment:
+  #     POSTGRES_DB: 'golesson'
+  #     POSTGRES_USER: 'admin'
+  #     POSTGRES_PASSWORD: 'postgres'
+  #   ports:
+  #     - '5432:5432'
+  #   volumes:
+  #     - postgres-db-volume:/var/lib/postgresql/data
   app:
     build:
       context: .
@@ -28,7 +28,7 @@ services:
       - "8000:8000"
     # network_mode: "host"
     restart: unless-stopped
-    depends_on:
-      - postgres
-volumes:
-  postgres-db-volume:
+    # depends_on:
+    #   - postgres
+# volumes:
+#   postgres-db-volume:
