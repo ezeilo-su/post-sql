@@ -21,8 +21,8 @@ func main() {
 	defer db.Close()
 
 	log.Println("Connected to Postgres")
-	dep := api.Dependencies{DB: db}
-	router := api.InitRoutes(dep)
+	dep := api.Dependencies{DB: db, Mux: http.NewServeMux()}
+	router := api.AddRoutes(dep)
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,

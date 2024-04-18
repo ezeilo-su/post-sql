@@ -4,22 +4,22 @@ import (
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/sundayezeilo/post-sql/src/handlers"
+	api "github.com/sundayezeilo/post-sql/src/handlers"
 	"github.com/sundayezeilo/post-sql/src/middleware"
 	"github.com/sundayezeilo/post-sql/src/repositories"
 	"github.com/sundayezeilo/post-sql/src/services"
 )
 
 type Dependencies struct {
-	DB *sqlx.DB
+	DB  *sqlx.DB
+	Mux *http.ServeMux
 }
 
-func InitRoutes(dep Dependencies) *http.ServeMux {
+func AddRoutes(dep Dependencies) *http.ServeMux {
 	ps := services.NewPostService(repositories.NewPostRepository(dep.DB))
 	pc := api.NewPostHandler(ps)
 
-	router := http.NewServeMux()
-	router.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
+	dep.Mux.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
 
-	return router
+	return dep.Mux
 }
