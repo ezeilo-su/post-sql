@@ -27,7 +27,7 @@ type Post struct {
 }
 
 type PostService interface {
-	CreatePost(context.Context, *CreatePostParams) (*Post, error)
+	CreatePost(context.Context, *CreatePostParams) (Post, error)
 }
 
 // PostServiceImpl is the implementation of the PostService interface
@@ -41,8 +41,8 @@ func NewPostService(postRepo repositories.PostRepository) PostService {
 }
 
 // CreatePost handles business logic for creating a new post
-func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) (*Post, error) {
-	post := &repositories.CreatePostParams{
+func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) (Post, error) {
+	postDto := &repositories.CreatePostParams{
 		Title:     p.Title,
 		Content:   p.Content,
 		User:      p.User,
@@ -51,13 +51,13 @@ func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) 
 		Image:     p.Image,
 	}
 
-	newPost, err := ps.postRepo.Create(ctx, post)
+	newPost, err := ps.postRepo.Create(ctx, postDto)
 
 	if err != nil {
-		return nil, err
+		return Post{}, err
 	}
 
-	return &Post{
+	return Post{
 		UID:       newPost.UID,
 		Title:     newPost.Title,
 		Content:   newPost.Content,

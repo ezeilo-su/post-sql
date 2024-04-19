@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -27,8 +26,9 @@ func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	var newPost *services.Post
-	newPost, err = pc.service.CreatePost(context.Background(), &post)
+	var newPost services.Post
+	ctx := r.Context()
+	newPost, err = pc.service.CreatePost(ctx, &post)
 	if err != nil {
 		log.Println("Error:", err)
 		http.Error(w, "Could not create post", http.StatusInternalServerError)
@@ -37,5 +37,5 @@ func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(*newPost)
+	json.NewEncoder(w).Encode(newPost)
 }
