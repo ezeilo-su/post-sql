@@ -2,10 +2,10 @@ package repositories
 
 import (
 	"context"
-	"github.com/sundayezeilo/post-sql/src/models"
 	"time"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/sundayezeilo/post-sql/src/models"
 )
 
 const createPostSql = `
@@ -29,18 +29,18 @@ type PostRepository interface {
 
 // PostRepositoryImpl handles interactions with the posts table
 type PostRepositoryImpl struct {
-	dbClient *sqlx.DB
+	dbClient *pgxpool.Pool
 }
 
 // NewPostRepository creates a new type of PostRepository
-func NewPostRepository(db *sqlx.DB) PostRepository {
+func NewPostRepository(db *pgxpool.Pool) PostRepository {
 	return &PostRepositoryImpl{dbClient: db}
 }
 
 // Create creates a new post in the database
 func (r *PostRepositoryImpl) Create(ctx context.Context, post *CreatePostParams) (*models.PostModel, error) {
 	var d models.PostModel
-	err := r.dbClient.QueryRowContext(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
+	err := r.dbClient.QueryRow(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
 		&d.UID, &d.Title, &d.Content, &d.Image, &d.User, &d.CreatedAt, &d.UpdatedAt,
 	)
 

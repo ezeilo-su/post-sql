@@ -1,27 +1,30 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgxpool"
 	c "github.com/sundayezeilo/post-sql/src/config"
 	api "github.com/sundayezeilo/post-sql/src/routes"
 )
 
 func main() {
 	config := c.GetConfig()
-	db, err := sqlx.Connect("postgres", config.PostgresURL)
-
+	ctx := context.Background()
+	dbpool, err := pgxpool.New(ctx, config.PostgresURL)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
+		os.Exit(1)
 	}
 
-	defer db.Close()
+	defer dbpool.Close()
 
 	log.Println("Connected to Postgres")
-	dep := api.Dependencies{DB: db, Mux: http.NewServeMux()}
+	dep := api.Dependencies{DB: dbpool, Mux: http.NewServeMux()}
 	router := api.AddRoutes(dep)
 
 	server := &http.Server{

@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	api "github.com/sundayezeilo/post-sql/src/handlers"
 	"github.com/sundayezeilo/post-sql/src/middleware"
 	"github.com/sundayezeilo/post-sql/src/repositories"
@@ -11,7 +11,7 @@ import (
 )
 
 type Dependencies struct {
-	DB  *sqlx.DB
+	DB  *pgxpool.Pool
 	Mux *http.ServeMux
 }
 
