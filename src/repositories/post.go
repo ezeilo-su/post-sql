@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sundayezeilo/post-sql/src/models"
+	database "github.com/sundayezeilo/post-sql/src/db"
+	model "github.com/sundayezeilo/post-sql/src/models"
 )
 
 const createPostSql = `
@@ -14,7 +16,7 @@ RETURNING *;
 `
 
 type PostRepository interface {
-	Create(context.Context, *model.PostModel) (*model.PostModel, error)
+	Create(context.Context, *model.Post) (*model.Post, error)
 }
 
 // PostRepositoryImpl handles interactions with the posts table
@@ -28,8 +30,16 @@ func NewPostRepository(db *pgxpool.Pool) PostRepository {
 }
 
 // Create creates a new post in the database
-func (r *PostRepositoryImpl) Create(ctx context.Context, p *model.PostModel) (*model.PostModel, error) {
-	err := r.dbClient.QueryRow(ctx, createPostSql, p.Title, p.Content, p.Image, p.User, p.CreatedAt, p.UpdatedAt).Scan(&p.UID)
+func (r *PostRepositoryImpl) Create(ctx context.Context, p *model.Post) (*model.Post, error) {
+	postDb := &database.PostDB{
+		User:      p.User,
+		Title:     p.Title,
+		Content:   p.Content,
+		Image:     p.Image,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	err := r.dbClient.QueryRow(ctx, createPostSql, postDb.Title, postDb.Content, postDb.Image, postDb.User, postDb.CreatedAt, postDb.UpdatedAt).Scan(&p.UID, &p.Title, &p.Content, &p.Image, &p.User, &p.CreatedAt, &p.UpdatedAt)
 
 	if err != nil {
 		return nil, err

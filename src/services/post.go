@@ -2,32 +2,13 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/sundayezeilo/post-sql/src/models"
 	"github.com/sundayezeilo/post-sql/src/repositories"
 )
 
-type PostDto struct {
-	UID       string    `json:"uid"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Image     string    `json:"image,omitempty"`
-}
-type CreatePostParams struct {
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	Image     string    `json:"image,omitempty"`
-}
-
 type PostService interface {
-	CreatePost(context.Context, *CreatePostParams) (PostDto, error)
+	CreatePost(context.Context, *model.Post) (*model.Post, error)
 }
 
 // PostServiceImpl is the implementation of the PostService interface
@@ -41,29 +22,19 @@ func NewPostService(postRepo repository.PostRepository) PostService {
 }
 
 // CreatePost handles business logic for creating a new post
-func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) (PostDto, error) {
-	postDto := &model.PostModel{
-		Title:     p.Title,
-		Content:   p.Content,
-		User:      p.User,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Image:     p.Image,
+func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *model.Post) (*model.Post, error) {
+	pm := &model.Post{
+		Title:   p.Title,
+		Content: p.Content,
+		User:    p.User,
+		Image:   p.Image,
 	}
 
-	newPost, err := ps.postRepo.Create(ctx, postDto)
+	pm, err := ps.postRepo.Create(ctx, pm)
 
 	if err != nil {
-		return PostDto{}, err
+		return nil, err
 	}
 
-	return PostDto{
-		UID:       newPost.UID,
-		Title:     newPost.Title,
-		Content:   newPost.Content,
-		User:      newPost.User,
-		CreatedAt: newPost.CreatedAt,
-		UpdatedAt: newPost.UpdatedAt,
-		Image:     newPost.Image,
-	}, nil
+	return pm, nil
 }
