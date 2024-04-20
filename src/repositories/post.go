@@ -1,8 +1,7 @@
-package repositories
+package repository
 
 import (
 	"context"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sundayezeilo/post-sql/src/models"
@@ -14,18 +13,8 @@ VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 `
 
-type PostModel models.PostModel
-type CreatePostParams struct {
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Image     string    `json:"image,omitempty"`
-}
-
 type PostRepository interface {
-	Create(context.Context, *CreatePostParams) (PostModel, error)
+	Create(context.Context, *model.PostModel) (*model.PostModel, error)
 }
 
 // PostRepositoryImpl handles interactions with the posts table
@@ -39,15 +28,12 @@ func NewPostRepository(db *pgxpool.Pool) PostRepository {
 }
 
 // Create creates a new post in the database
-func (r *PostRepositoryImpl) Create(ctx context.Context, post *CreatePostParams) (PostModel, error) {
-	var d PostModel
-	err := r.dbClient.QueryRow(ctx, createPostSql, post.Title, post.Content, post.Image, post.User, post.CreatedAt, post.UpdatedAt).Scan(
-		&d.UID, &d.Title, &d.Content, &d.Image, &d.User, &d.CreatedAt, &d.UpdatedAt,
-	)
+func (r *PostRepositoryImpl) Create(ctx context.Context, p *model.PostModel) (*model.PostModel, error) {
+	err := r.dbClient.QueryRow(ctx, createPostSql, p.Title, p.Content, p.Image, p.User, p.CreatedAt, p.UpdatedAt).Scan(&p.UID)
 
 	if err != nil {
-		return PostModel{}, err
+		return nil, err
 	}
 
-	return d, nil
+	return p, nil
 }

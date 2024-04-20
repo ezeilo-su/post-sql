@@ -16,7 +16,7 @@ type Dependencies struct {
 }
 
 func AddRoutes(dep Dependencies) *http.ServeMux {
-	ps := services.NewPostService(repositories.NewPostRepository(dep.DB))
+	ps := service.NewPostService(repository.NewPostRepository(dep.DB))
 	pc := api.NewPostHandler(ps)
 
 	dep.Mux.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))

@@ -10,25 +10,25 @@ import (
 
 // PostHandler is the controller for post resource
 type PostHandler struct {
-	service services.PostService
+	service service.PostService
 }
 
 // NewPostHandler creates a new PostHandler type
-func NewPostHandler(service services.PostService) *PostHandler {
+func NewPostHandler(service service.PostService) *PostHandler {
 	return &PostHandler{service}
 }
 
 // CreatePost handles the incoming POST request to create a new post
 func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
-	var post services.CreatePostParams
-	err := json.NewDecoder(r.Body).Decode(&post)
+	var postParams service.CreatePostParams
+	err := json.NewDecoder(r.Body).Decode(&postParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	var newPost services.Post
+	var post service.PostDto
 	ctx := r.Context()
-	newPost, err = pc.service.CreatePost(ctx, &post)
+	post, err = pc.service.CreatePost(ctx, &postParams)
 	if err != nil {
 		log.Println("Error:", err)
 		http.Error(w, "Could not create post", http.StatusInternalServerError)
@@ -37,5 +37,5 @@ func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newPost)
+	json.NewEncoder(w).Encode(post)
 }

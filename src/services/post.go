@@ -1,12 +1,22 @@
-package services
+package service
 
 import (
 	"context"
 	"time"
 
+	"github.com/sundayezeilo/post-sql/src/models"
 	"github.com/sundayezeilo/post-sql/src/repositories"
 )
 
+type PostDto struct {
+	UID       string    `json:"uid"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	User      string    `json:"user"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Image     string    `json:"image,omitempty"`
+}
 type CreatePostParams struct {
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
@@ -16,33 +26,23 @@ type CreatePostParams struct {
 	Image     string    `json:"image,omitempty"`
 }
 
-type Post struct {
-	UID       string    `json:"uid"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	User      string    `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Image     string    `json:"image,omitempty"`
-}
-
 type PostService interface {
-	CreatePost(context.Context, *CreatePostParams) (Post, error)
+	CreatePost(context.Context, *CreatePostParams) (PostDto, error)
 }
 
 // PostServiceImpl is the implementation of the PostService interface
 type PostServiceImpl struct {
-	postRepo repositories.PostRepository
+	postRepo repository.PostRepository
 }
 
 // NewPostService creates a new PostService type
-func NewPostService(postRepo repositories.PostRepository) PostService {
+func NewPostService(postRepo repository.PostRepository) PostService {
 	return &PostServiceImpl{postRepo: postRepo}
 }
 
 // CreatePost handles business logic for creating a new post
-func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) (Post, error) {
-	postDto := &repositories.CreatePostParams{
+func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) (PostDto, error) {
+	postDto := &model.PostModel{
 		Title:     p.Title,
 		Content:   p.Content,
 		User:      p.User,
@@ -54,10 +54,10 @@ func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *CreatePostParams) 
 	newPost, err := ps.postRepo.Create(ctx, postDto)
 
 	if err != nil {
-		return Post{}, err
+		return PostDto{}, err
 	}
 
-	return Post{
+	return PostDto{
 		UID:       newPost.UID,
 		Title:     newPost.Title,
 		Content:   newPost.Content,
