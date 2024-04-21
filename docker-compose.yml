@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     environment:
       POSTGRES_URL: $POSTGRES_URL
       SERVER_PORT: $SERVER_PORT
@@ -24,8 +26,10 @@ services:
       GOOSE_DRIVER: $GOOSE_DRIVER
       GOOSE_MIGRATION_DIR: $GOOSE_MIGRATION_DIR
       GOOSE_DBSTRING: $GOOSE_DBSTRING
+    expose:
+      - $SERVER_PORT
     ports:
-      - "8000:8000"
+      - "$SERVER_PORT:$SERVER_PORT"
     # network_mode: "host"
     restart: unless-stopped
     # depends_on:

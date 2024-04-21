@@ -1,25 +1,17 @@
-############################
-# STEP 1 build executable binary
-############################
-FROM golang:latest AS builder
+FROM golang:1.22-alpine AS builder
+
 WORKDIR /app
+
 COPY go.mod .
 COPY go.sum .
 COPY ./src ./src
+
 RUN go mod download
 RUN go mod verify
 
-# Build the binary.
-RUN go build -ldflags="-w -s" -o bin ./src/server/
+RUN go build -ldflags="-w -s" -o server ./src/server
 
-############################
-# STEP 2 build a small image
-############################
-FROM alpine
-# FROM scratch
+FROM scratch
+COPY --from=builder app/server bin/
 
-# Copy our static executable
-COPY --from=builder bin .
-
-# Run the hello binary.
-ENTRYPOINT ["/bin"]
+ENTRYPOINT [ "/bin/server" ]
