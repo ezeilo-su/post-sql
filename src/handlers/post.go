@@ -5,8 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	model "github.com/sundayezeilo/post-sql/src/models"
-	service "github.com/sundayezeilo/post-sql/src/services"
+	"github.com/sundayezeilo/post-sql/src/services"
 )
 
 // PostHandler is the controller for post resource
@@ -21,7 +20,7 @@ func NewPostHandler(service service.PostService) *PostHandler {
 
 // CreatePost handles the incoming POST request to create a new post
 func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
-	var p *model.Post
+	var p *service.Post
 	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

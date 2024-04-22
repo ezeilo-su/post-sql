@@ -2,13 +2,23 @@ package service
 
 import (
 	"context"
+	"time"
 
-	"github.com/sundayezeilo/post-sql/src/models"
 	"github.com/sundayezeilo/post-sql/src/repositories"
 )
 
+type Post struct {
+	UID       string    `json:"uid"`
+	User      string    `json:"user"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Image     string    `json:"image,omitempty"`
+}
+
 type PostService interface {
-	CreatePost(context.Context, *model.Post) (*model.Post, error)
+	CreatePost(context.Context, *Post) (*Post, error)
 }
 
 // PostServiceImpl is the implementation of the PostService interface
@@ -22,19 +32,27 @@ func NewPostService(postRepo repository.PostRepository) PostService {
 }
 
 // CreatePost handles business logic for creating a new post
-func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *model.Post) (*model.Post, error) {
-	pm := &model.Post{
+func (ps *PostServiceImpl) CreatePost(ctx context.Context, p *Post) (*Post, error) {
+	pm := &repository.PostDto{
 		Title:   p.Title,
 		Content: p.Content,
 		User:    p.User,
 		Image:   p.Image,
 	}
-
-	pm, err := ps.postRepo.Create(ctx, pm)
+	var newPost *repository.PostDto
+	newPost, err := ps.postRepo.Create(ctx, pm)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return pm, nil
+	p.UID = newPost.UID
+	p.User = newPost.User
+	p.Title = newPost.Title
+	p.Content = newPost.Content
+	p.CreatedAt = newPost.CreatedAt
+	p.UpdatedAt = newPost.UpdatedAt
+	p.Image = newPost.Image
+
+	return p, nil
 }

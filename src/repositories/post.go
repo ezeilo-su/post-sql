@@ -5,8 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	database "github.com/sundayezeilo/post-sql/src/db"
-	model "github.com/sundayezeilo/post-sql/src/models"
+	"github.com/sundayezeilo/post-sql/src/db"
 )
 
 const createPostSql = `
@@ -15,8 +14,18 @@ VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 `
 
+type PostDto struct {
+	UID       string    `json:"uid"`
+	User      string    `json:"user"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Image     string    `json:"image,omitempty"`
+}
+
 type PostRepository interface {
-	Create(context.Context, *model.Post) (*model.Post, error)
+	Create(context.Context, *PostDto) (*PostDto, error)
 }
 
 // PostRepositoryImpl handles interactions with the posts table
@@ -30,7 +39,7 @@ func NewPostRepository(db *pgxpool.Pool) PostRepository {
 }
 
 // Create creates a new post in the database
-func (r *PostRepositoryImpl) Create(ctx context.Context, p *model.Post) (*model.Post, error) {
+func (r *PostRepositoryImpl) Create(ctx context.Context, p *PostDto) (*PostDto, error) {
 	postDb := &database.PostDB{
 		User:      p.User,
 		Title:     p.Title,
