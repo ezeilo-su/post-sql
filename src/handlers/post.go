@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/sundayezeilo/post-sql/src/services"
@@ -30,7 +30,7 @@ func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	p, err = pc.service.CreatePost(ctx, p)
 	if err != nil {
-		log.Println("Error:", err)
+		slog.Error("Error creating new post", err)
 		http.Error(w, "Could not create post", http.StatusInternalServerError)
 		return
 	}
