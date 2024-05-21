@@ -5,6 +5,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -14,43 +16,63 @@ type Config struct {
 	WriteTimeout time.Duration `env:"WRITE_TIMEOUT"`
 }
 
-func GetConfig() *Config {
-	var c Config
-	if dbUrl, ok := os.LookupEnv("POSTGRES_URL"); !ok || dbUrl == "" {
-		log.Fatalln("POSTGRES_URL not set in the ENV")
-	} else {
-		c.PostgresURL = dbUrl
+var Envs = initConfig()
+
+func initConfig() Config {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file ", err)
 	}
 
-	if port, ok := os.LookupEnv("SERVER_PORT"); !ok || port == "" {
-		log.Println("SERVER_PORT not set in the ENV " + port)
-		c.ServerPort = "8000"
-	} else {
-		log.Println("PORT: " + port)
-		c.ServerPort = port
+	return Config{
+		PostgresURL:  getEnvStringRequired("POSTGRES_URL"),
+		ServerPort:   getEnvStringOptional("SERVER_PORT", "8000"),
+		ReadTimeout:  time.Duration(getEnvIntOptional("READ_TIMEOUT", 10)) * time.Second,
+		WriteTimeout: time.Duration(getEnvIntOptional("WRITE_TIMEOUT", 10)) * time.Second,
+	}
+}
+
+func getEnvStringRequired(key string) string {
+	var env string
+	var ok bool
+	if env, ok = os.LookupEnv(key); !ok {
+		log.Fatalln(key + " missing in ENV")
 	}
 
-	if rTimeout, ok := os.LookupEnv("READ_TIMEOUT"); !ok || rTimeout == "" {
-		c.ReadTimeout = 10 * time.Second
-	} else {
-		num, err := strconv.ParseInt(rTimeout, 10, strconv.IntSize)
+	return env
+}
+
+func getEnvStringOptional(key string, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+
+	return fallback
+}
+
+func getEnvIntRequired(key string) int {
+	var num int
+	if val, ok := os.LookupEnv(key); ok {
+		parsed, err := strconv.ParseInt(val, 10, strconv.IntSize)
 		if err != nil {
-			log.Fatalln("Error reading READ_TIMEOUT from ENV:", err)
+			log.Fatalln("Error parsing "+key+" from ENV", err)
 		} else {
-			c.ReadTimeout = time.Duration(num) * time.Second
+			num = int(parsed)
+		}
+	} else {
+		log.Fatalln(key + " missing in ENV")
+	}
+	return num
+}
+
+func getEnvIntOptional(key string, fallback int) int {
+	if val, ok := os.LookupEnv(key); ok {
+		num, err := strconv.ParseInt(val, 10, strconv.IntSize)
+		if err == nil {
+			return int(num)
+		} else {
+			log.Println("Error parsing "+key+" from ENV", err)
 		}
 	}
-
-	if wTimeout, ok := os.LookupEnv("WRITE_TIMEOUT"); !ok || wTimeout == "" {
-		c.WriteTimeout = 10 * time.Second
-	} else {
-		num, err := strconv.ParseInt(wTimeout, 10, strconv.IntSize)
-		if err != nil {
-			log.Fatalln("Error reading WRITE_TIMEOUT from ENV:", err)
-		} else {
-			c.WriteTimeout = time.Duration(num) * time.Second
-		}
-	}
-
-	return &c
+	return fallback
 }

@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	config := c.GetConfig()
+	config := c.Envs
 	ctx := context.Background()
 	dbpool, err := pgxpool.New(ctx, config.PostgresURL)
 	if err != nil {
