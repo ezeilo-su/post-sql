@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/sundayezeilo/post-sql/src/repositories"
+	repository "github.com/sundayezeilo/post-sql/src/repositories"
 )
 
 type Post struct {
@@ -23,12 +23,13 @@ type PostService interface {
 
 // PostServiceImpl is the implementation of the PostService interface
 type PostServiceImpl struct {
+	ctx      context.Context
 	postRepo repository.PostRepository
 }
 
 // NewPostService creates a new PostService type
-func NewPostService(postRepo repository.PostRepository) PostService {
-	return &PostServiceImpl{postRepo: postRepo}
+func NewPostService(ctx context.Context, postRepo repository.PostRepository) PostService {
+	return &PostServiceImpl{ctx, postRepo}
 }
 
 // CreatePost handles business logic for creating a new post

@@ -1,25 +1,59 @@
 package api
 
 import (
+	"context"
+	"log"
 	"net/http"
+	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	api "github.com/sundayezeilo/post-sql/src/handlers"
 	"github.com/sundayezeilo/post-sql/src/middleware"
-	"github.com/sundayezeilo/post-sql/src/repositories"
-	"github.com/sundayezeilo/post-sql/src/services"
+	repository "github.com/sundayezeilo/post-sql/src/repositories"
+	service "github.com/sundayezeilo/post-sql/src/services"
 )
 
-type Dependencies struct {
-	DB  *pgxpool.Pool
-	Mux *http.ServeMux
+type APIServer struct {
+	Addr         string
+	Ctx          context.Context
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+	Repository   *repository.Repository
 }
 
-func AddRoutes(dep Dependencies) *http.ServeMux {
-	ps := service.NewPostService(repository.NewPostRepository(dep.DB))
+// func NewAPIServer(cfg *APIServer) *APIServer {
+// 	return &APIServer{
+// 		ctx:          cfg.ctx,
+// 		addr:         cfg.addr,
+// 		repository:   cfg.repository,
+// 		ReadTimeout:  cfg.ReadTimeout,
+// 		WriteTimeout: cfg.WriteTimeout,
+// 	}
+// }
+
+func (s *APIServer) Run() {
+	ps := service.NewPostService(s.Ctx, s.Repository.Post)
 	pc := api.NewPostHandler(ps)
 
-	dep.Mux.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
+	mux := http.NewServeMux()
+	apiV1Mux := http.NewServeMux()
+	apiV1Mux.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
 
-	return dep.Mux
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+
+	httpServer := &http.Server{
+		Addr:         ":" + s.Addr,
+		Handler:      mux,
+		ReadTimeout:  s.ReadTimeout,
+		WriteTimeout: s.WriteTimeout,
+	}
+
+	go func() {
+		log.Printf("listening on %s\n", httpServer.Addr)
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("error listening and serving: %s\n", err)
+		}
+	}()
+
+	// Block the main goroutine (optional, based on shutdown logic)
+	select {}
 }

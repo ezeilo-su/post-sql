@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	c "github.com/sundayezeilo/post-sql/src/config"
+	repository "github.com/sundayezeilo/post-sql/src/repositories"
 	api "github.com/sundayezeilo/post-sql/src/routes"
 )
 
@@ -24,15 +24,15 @@ func main() {
 	defer dbpool.Close()
 
 	log.Println("Connected to Postgres")
-	dep := api.Dependencies{DB: dbpool, Mux: http.NewServeMux()}
-	router := api.AddRoutes(dep)
-
-	server := &http.Server{
-		Addr:         ":" + config.ServerPort,
-		Handler:      router,
+	pr := repository.NewPostRepository(dbpool)
+	repos := &repository.Repository{Post: pr}
+	apiServer := &api.APIServer{
+		Addr:         config.ServerPort,
+		Ctx:          ctx,
+		Repository:   repos,
 		ReadTimeout:  config.ReadTimeout,
 		WriteTimeout: config.WriteTimeout,
 	}
-	log.Println("Server listening on port " + config.ServerPort)
-	log.Fatal(server.ListenAndServe())
+
+	apiServer.Run()
 }
