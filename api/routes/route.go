@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	api "github.com/sundayezeilo/post-sql/src/handlers"
-	"github.com/sundayezeilo/post-sql/src/middleware"
-	repository "github.com/sundayezeilo/post-sql/src/repositories"
-	service "github.com/sundayezeilo/post-sql/src/services"
+	api "github.com/sundayezeilo/post-sql/api/handlers"
+	"github.com/sundayezeilo/post-sql/middleware"
+	repository "github.com/sundayezeilo/post-sql/repositories"
+	service "github.com/sundayezeilo/post-sql/services"
 )
 
 type APIServer struct {

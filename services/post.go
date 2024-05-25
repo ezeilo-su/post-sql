@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	repository "github.com/sundayezeilo/post-sql/src/repositories"
+	repository "github.com/sundayezeilo/post-sql/repositories"
 )
 
 type Post struct {

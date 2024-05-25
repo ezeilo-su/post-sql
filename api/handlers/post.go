@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	service "github.com/sundayezeilo/post-sql/src/services"
+	service "github.com/sundayezeilo/post-sql/services"
 )
 
 // PostHandler is the controller for post resource

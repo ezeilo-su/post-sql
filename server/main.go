@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	c "github.com/sundayezeilo/post-sql/src/config"
-	repository "github.com/sundayezeilo/post-sql/src/repositories"
-	api "github.com/sundayezeilo/post-sql/src/routes"
+	c "github.com/sundayezeilo/post-sql/config"
+	repository "github.com/sundayezeilo/post-sql/repositories"
+	api "github.com/sundayezeilo/post-sql/api/routes"
 )
 
 func main() {

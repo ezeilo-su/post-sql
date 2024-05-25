@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sundayezeilo/post-sql/src/db"
+	"github.com/sundayezeilo/post-sql/db"
 )
 
 const createPostSql = `
