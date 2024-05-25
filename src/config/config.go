@@ -52,15 +52,15 @@ func getEnvStringOptional(key string, fallback string) string {
 
 func getEnvIntRequired(key string) int {
 	var num int
-	if val, ok := os.LookupEnv(key); ok {
+	if val, ok := os.LookupEnv(key); !ok {
+		log.Fatalln(key + " missing in ENV")
+	} else {
 		parsed, err := strconv.ParseInt(val, 10, strconv.IntSize)
 		if err != nil {
 			log.Fatalln("Error parsing "+key+" from ENV", err)
 		} else {
 			num = int(parsed)
 		}
-	} else {
-		log.Fatalln(key + " missing in ENV")
 	}
 	return num
 }
