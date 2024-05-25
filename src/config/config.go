@@ -10,10 +10,10 @@ import (
 )
 
 type Config struct {
-	PostgresURL  string        `env:"POSTGRES_URL"`
-	ServerPort   string        `env:"SERVER_PORT"`
-	ReadTimeout  time.Duration `env:"READ_TIMEOUT"`
-	WriteTimeout time.Duration `env:"WRITE_TIMEOUT"`
+	PostgresURL  string
+	ServerPort   string
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
 }
 
 var Envs = initConfig()
