@@ -33,7 +33,7 @@ func (ps *postService) CreatePost(ctx context.Context, pm *models.Post) error {
 
 	// Generate a new UUID V7 for the post
 	pm.ID = uuidV7.String()
-	pm.CreatedAt = time.Now()
+	pm.CreatedAt = time.Now().UTC()
 	pm.UpdatedAt = pm.CreatedAt
 
 	err = ps.repo.Create(ctx, pm)
