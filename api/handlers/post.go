@@ -1,41 +1,55 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
 
-	service "github.com/sundayezeilo/post-sql/services"
+	"github.com/go-playground/validator"
+	"github.com/sundayezeilo/post-sql/api/dto"
+	"github.com/sundayezeilo/post-sql/internal/conversion"
+	"github.com/sundayezeilo/post-sql/internal/services"
 )
 
 // PostHandler is the controller for post resource
 type PostHandler struct {
-	service service.PostService
+	service   services.PostService
+	validator *validator.Validate
 }
 
 // NewPostHandler creates a new PostHandler type
-func NewPostHandler(service service.PostService) *PostHandler {
-	return &PostHandler{service}
+func NewPostHandler(service services.PostService) *PostHandler {
+	return &PostHandler{
+		service:   service,
+		validator: validator.New(),
+	}
 }
 
-// CreatePost handles the incoming POST request to create a new post
-func (pc *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
-	var p *service.Post
-	err := json.NewDecoder(r.Body).Decode(&p)
-	if err != nil {
+func (h *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
+	var createPostReq dto.CreatePostRequest
+	if err := json.NewDecoder(r.Body).Decode(&createPostReq); err != nil {
+		slog.Error("Error decoding create post payload", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	ctx := r.Context()
-	p, err = pc.service.CreatePost(ctx, p)
-	if err != nil {
-		slog.Error("Error creating new post", err)
-		http.Error(w, "Could not create post", http.StatusInternalServerError)
+	if err := h.validator.Struct(createPostReq); err != nil {
+		slog.Error("Error validating create post payload", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	post := conversion.ConvertCreatePostRequestToPost(&createPostReq)
+
+	if err := h.service.CreatePost(context.Background(), post); err != nil {
+		slog.Error("Error creating new post", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response := conversion.ConvertPostToPostResponse(post)
+
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(p)
+	json.NewEncoder(w).Encode(response)
 }

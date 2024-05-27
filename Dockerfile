@@ -10,7 +10,7 @@ RUN go mod verify
 
 COPY ./ ./
 
-RUN go build -ldflags="-w -s" -o server ./server
+RUN go build -ldflags="-w -s" -o server ./cmd
 
 FROM scratch
 COPY --from=builder app/server /usr/server

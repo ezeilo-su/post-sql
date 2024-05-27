@@ -7,9 +7,9 @@ import (
 	"time"
 
 	api "github.com/sundayezeilo/post-sql/api/handlers"
-	"github.com/sundayezeilo/post-sql/middleware"
-	repository "github.com/sundayezeilo/post-sql/repositories"
-	service "github.com/sundayezeilo/post-sql/services"
+	"github.com/sundayezeilo/post-sql/internal/middleware"
+	repository "github.com/sundayezeilo/post-sql/internal/repositories"
+	service "github.com/sundayezeilo/post-sql/internal/services"
 )
 
 type APIServer struct {

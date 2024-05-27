@@ -1,10 +1,10 @@
-package database
+package models
 
 import "time"
 
 // PostDB represents the database schema for the posts table
-type PostDB struct {
-	UID       string    `db:"id"`
+type Post struct {
+	ID        string    `db:"id"`
 	User      string    `db:"user"`
 	Title     string    `db:"title"`
 	Content   string    `db:"content"`
