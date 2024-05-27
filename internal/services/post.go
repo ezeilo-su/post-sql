@@ -15,13 +15,13 @@ type PostService interface {
 
 // postService is the implementation of the PostService interface
 type postService struct {
-	ctx      context.Context
-	postRepo repository.PostRepository
+	ctx  context.Context
+	repo repository.PostRepository
 }
 
 // NewPostService creates a new PostService type
-func NewPostService(ctx context.Context, postRepo repository.PostRepository) PostService {
-	return &postService{ctx, postRepo}
+func NewPostService(ctx context.Context, repo repository.PostRepository) PostService {
+	return &postService{ctx, repo}
 }
 
 // CreatePost handles business logic for creating a new post
@@ -30,7 +30,7 @@ func (ps *postService) CreatePost(ctx context.Context, pm *models.Post) error {
 	pm.CreatedAt = time.Now()
 	pm.UpdatedAt = pm.CreatedAt
 
-	err := ps.postRepo.Create(ctx, pm)
+	err := ps.repo.Create(ctx, pm)
 
 	if err != nil {
 		return err
