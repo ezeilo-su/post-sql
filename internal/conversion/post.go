@@ -15,15 +15,15 @@ func ConvertCreatePostRequestToPost(req *dto.CreatePostRequest) *models.Post {
 	}
 }
 
-// ConvertPostToPostResponse converts a Post model to a PostResponse DTO.
-func ConvertPostToPostResponse(post *models.Post) *dto.PostResponse {
-	return &dto.PostResponse{
+// ConvertPostToCreatePostResponse converts a Post model to a CreatePostResponse DTO.
+func ConvertPostToCreatePostResponse(post *models.Post) *dto.CreatePostResponse {
+	return &dto.CreatePostResponse{
 		ID:        post.ID,
-		Title:     post.Title,
 		User:      post.User,
+		Title:     post.Title,
 		Content:   post.Content,
 		Image:     post.Image,
-		CreatedAt: post.CreatedAt.Format("2009-11-10 23:00:00"),
-		UpdatedAt: post.UpdatedAt.Format("2009-11-10 23:00:00"),
+		CreatedAt: post.CreatedAt.String(),
+		UpdatedAt: post.UpdatedAt.String(),
 	}
 }

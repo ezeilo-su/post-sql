@@ -7,7 +7,7 @@ import (
 	"time"
 
 	api "github.com/sundayezeilo/post-sql/api/handlers"
-	"github.com/sundayezeilo/post-sql/internal/middleware"
+	"github.com/sundayezeilo/post-sql/api/middleware"
 	repository "github.com/sundayezeilo/post-sql/internal/repositories"
 	service "github.com/sundayezeilo/post-sql/internal/services"
 )

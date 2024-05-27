@@ -7,7 +7,7 @@ type CreatePostRequest struct {
 	Image   string `json:"image,omitempty"`
 }
 
-type PostResponse struct {
+type CreatePostResponse struct {
 	ID        string `json:"id"`
 	User      string `json:"user"`
 	Title     string `json:"title"`

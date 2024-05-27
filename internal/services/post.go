@@ -25,17 +25,10 @@ func NewPostService(ctx context.Context, postRepo repository.PostRepository) Pos
 }
 
 // CreatePost handles business logic for creating a new post
-func (ps *postService) CreatePost(ctx context.Context, cpr *models.Post) error {
-	createdAt := time.Now()
-	pm := &models.Post{
-		ID:        uuid.New().String(),
-		User:      cpr.User,
-		Title:     cpr.Title,
-		Content:   cpr.Content,
-		Image:     cpr.Image,
-		CreatedAt: createdAt,
-		UpdatedAt: createdAt,
-	}
+func (ps *postService) CreatePost(ctx context.Context, pm *models.Post) error {
+	pm.ID = uuid.New().String()
+	pm.CreatedAt = time.Now()
+	pm.UpdatedAt = pm.CreatedAt
 
 	err := ps.postRepo.Create(ctx, pm)
 

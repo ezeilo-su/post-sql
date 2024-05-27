@@ -48,7 +48,7 @@ func (h *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := conversion.ConvertPostToPostResponse(post)
+	response := conversion.ConvertPostToCreatePostResponse(post)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)

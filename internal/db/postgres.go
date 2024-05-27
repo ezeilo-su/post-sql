@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -19,6 +18,5 @@ func NewPostgresDB(ctx context.Context, postgresURL string) (*pgxpool.Pool, erro
 		return nil, err
 	}
 
-	log.Println("Connected to PostgreSQL!")
 	return dbpool, nil
 }
