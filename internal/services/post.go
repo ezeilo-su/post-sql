@@ -26,11 +26,17 @@ func NewPostService(ctx context.Context, repo repository.PostRepository) PostSer
 
 // CreatePost handles business logic for creating a new post
 func (ps *postService) CreatePost(ctx context.Context, pm *models.Post) error {
-	pm.ID = uuid.New().String()
+	uuidV7, err := uuid.NewV7()
+	if err != nil {
+		return err
+	}
+
+	// Generate a new UUID V7 for the post
+	pm.ID = uuidV7.String()
 	pm.CreatedAt = time.Now()
 	pm.UpdatedAt = pm.CreatedAt
 
-	err := ps.repo.Create(ctx, pm)
+	err = ps.repo.Create(ctx, pm)
 
 	if err != nil {
 		return err

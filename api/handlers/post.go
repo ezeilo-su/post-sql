@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"encoding/json"
 	"log/slog"
 	"net/http"
+	"encoding/json"
 
 	"github.com/go-playground/validator"
 	"github.com/sundayezeilo/post-sql/api/dto"
@@ -44,7 +44,7 @@ func (h *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.CreatePost(context.Background(), post); err != nil {
 		slog.Error("Error creating new post", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error occured, could not create post", http.StatusInternalServerError)
 		return
 	}
 
