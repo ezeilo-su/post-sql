@@ -20,16 +20,6 @@ type APIServer struct {
 	Repository   *repository.Repository
 }
 
-// func NewAPIServer(cfg *APIServer) *APIServer {
-// 	return &APIServer{
-// 		ctx:          cfg.ctx,
-// 		addr:         cfg.addr,
-// 		repository:   cfg.repository,
-// 		ReadTimeout:  cfg.ReadTimeout,
-// 		WriteTimeout: cfg.WriteTimeout,
-// 	}
-// }
-
 func (s *APIServer) Run() {
 	ps := service.NewPostService(s.Ctx, s.Repository.Post)
 	pc := api.NewPostHandler(ps)
