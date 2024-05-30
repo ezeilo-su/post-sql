@@ -2,12 +2,13 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 	"net/http"
-	"encoding/json"
 
 	"github.com/go-playground/validator"
 	"github.com/sundayezeilo/post-sql/api/dto"
+	"github.com/sundayezeilo/post-sql/api/middleware"
 	"github.com/sundayezeilo/post-sql/internal/conversion"
 	"github.com/sundayezeilo/post-sql/internal/services"
 )
@@ -52,4 +53,8 @@ func (h *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)
+}
+
+func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("POST /posts", middleware.Logger(h.CreatePost))
 }

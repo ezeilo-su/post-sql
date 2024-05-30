@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/sundayezeilo/post-sql/internal/models"
-	repository "github.com/sundayezeilo/post-sql/internal/repositories"
+	"github.com/sundayezeilo/post-sql/internal/repositories"
 )
 
 type PostService interface {

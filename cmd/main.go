@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	api "github.com/sundayezeilo/post-sql/api/routes"
@@ -28,7 +29,7 @@ func main() {
 	log.Println("Connected to Postgres")
 	pr := repository.NewPostRepository(store)
 	repos := &repository.Repository{Post: pr}
-	apiServer := &api.APIServer{
+	server := &api.Server{
 		Addr:         config.ServerPort,
 		Ctx:          ctx,
 		Repository:   repos,
@@ -36,5 +37,15 @@ func main() {
 		WriteTimeout: config.WriteTimeout,
 	}
 
-	apiServer.Run()
+	httpServer := server.AddRoutes()
+
+	go func() {
+		log.Printf("listening on %s\n", httpServer.Addr)
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("error listening and serving: %s\n", err)
+		}
+	}()
+
+	// Block the main goroutine (optional, based on shutdown logic)
+	select {}
 }

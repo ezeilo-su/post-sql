@@ -2,17 +2,15 @@ package api
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"time"
 
-	api "github.com/sundayezeilo/post-sql/api/handlers"
-	"github.com/sundayezeilo/post-sql/api/middleware"
-	repository "github.com/sundayezeilo/post-sql/internal/repositories"
-	service "github.com/sundayezeilo/post-sql/internal/services"
+	"github.com/sundayezeilo/post-sql/api/handlers"
+	 "github.com/sundayezeilo/post-sql/internal/repositories"
+	 "github.com/sundayezeilo/post-sql/internal/services"
 )
 
-type APIServer struct {
+type Server struct {
 	Addr         string
 	Ctx          context.Context
 	ReadTimeout  time.Duration
@@ -20,14 +18,14 @@ type APIServer struct {
 	Repository   *repository.Repository
 }
 
-func (s *APIServer) Run() {
-	ps := service.NewPostService(s.Ctx, s.Repository.Post)
-	pc := api.NewPostHandler(ps)
+func (s *Server) AddRoutes() *http.Server {
+	ps := services.NewPostService(s.Ctx, s.Repository.Post)
+	ph := api.NewPostHandler(ps)
+
+	apiV1Mux := http.NewServeMux()
+	ph.RegisterRoutes(apiV1Mux)
 
 	mux := http.NewServeMux()
-	apiV1Mux := http.NewServeMux()
-	apiV1Mux.HandleFunc("POST /posts", middleware.Logger(pc.CreatePost))
-
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
 
 	httpServer := &http.Server{
@@ -36,14 +34,5 @@ func (s *APIServer) Run() {
 		ReadTimeout:  s.ReadTimeout,
 		WriteTimeout: s.WriteTimeout,
 	}
-
-	go func() {
-		log.Printf("listening on %s\n", httpServer.Addr)
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("error listening and serving: %s\n", err)
-		}
-	}()
-
-	// Block the main goroutine (optional, based on shutdown logic)
-	select {}
+	return httpServer
 }

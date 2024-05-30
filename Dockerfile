@@ -10,9 +10,9 @@ RUN go mod verify
 
 COPY ./ ./
 
-RUN go build -ldflags="-w -s" -o server ./cmd
+RUN go build -ldflags="-w -s" -o bin ./cmd
 
 FROM scratch
-COPY --from=builder app/server /usr/server
+COPY --from=builder app/bin /usr/local/bin
 
-ENTRYPOINT [ "/usr/server" ]
+ENTRYPOINT [ "/usr/local/bin" ]
