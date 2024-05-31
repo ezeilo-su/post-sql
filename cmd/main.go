@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 
-	api "github.com/sundayezeilo/post-sql/api/routes"
+	"github.com/sundayezeilo/post-sql/api/routes"
 	c "github.com/sundayezeilo/post-sql/config"
 	"github.com/sundayezeilo/post-sql/internal/db"
-	repository "github.com/sundayezeilo/post-sql/internal/repositories"
+	"github.com/sundayezeilo/post-sql/internal/repositories"
 )
 
 func main() {
@@ -27,17 +27,16 @@ func main() {
 	defer store.Close()
 
 	log.Println("Connected to Postgres")
-	pr := repository.NewPostRepository(store)
-	repos := &repository.Repository{Post: pr}
+	pr := repositories.NewPostRepository(store)
+	repos := &repositories.Repository{Post: pr}
 	server := &api.Server{
 		Addr:         config.ServerPort,
 		Ctx:          ctx,
-		Repository:   repos,
 		ReadTimeout:  config.ReadTimeout,
 		WriteTimeout: config.WriteTimeout,
 	}
 
-	httpServer := server.AddRoutes()
+	httpServer := server.AddRoutes(repos)
 
 	go func() {
 		log.Printf("listening on %s\n", httpServer.Addr)

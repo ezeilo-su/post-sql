@@ -16,11 +16,11 @@ type PostService interface {
 // postService is the implementation of the PostService interface
 type postService struct {
 	ctx  context.Context
-	repo repository.PostRepository
+	repo repositories.PostRepository
 }
 
 // NewPostService creates a new PostService type
-func NewPostService(ctx context.Context, repo repository.PostRepository) PostService {
+func NewPostService(ctx context.Context, repo repositories.PostRepository) PostService {
 	return &postService{ctx, repo}
 }
 

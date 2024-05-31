@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/sundayezeilo/post-sql/api/handlers"
-	 "github.com/sundayezeilo/post-sql/internal/repositories"
-	 "github.com/sundayezeilo/post-sql/internal/services"
+	"github.com/sundayezeilo/post-sql/internal/repositories"
+	"github.com/sundayezeilo/post-sql/internal/services"
 )
 
 type Server struct {
@@ -15,11 +15,11 @@ type Server struct {
 	Ctx          context.Context
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-	Repository   *repository.Repository
+	// Repository   *repository.Repository
 }
 
-func (s *Server) AddRoutes() *http.Server {
-	ps := services.NewPostService(s.Ctx, s.Repository.Post)
+func (s *Server) AddRoutes(repository *repositories.Repository) *http.Server {
+	ps := services.NewPostService(s.Ctx, repository.Post)
 	ph := api.NewPostHandler(ps)
 
 	apiV1Mux := http.NewServeMux()
