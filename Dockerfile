@@ -12,7 +12,8 @@ COPY ./ ./
 
 RUN go build -ldflags="-w -s" -o bin ./cmd
 
-FROM scratch
+FROM alpine
 COPY --from=builder app/bin /usr/local/bin/server
+COPY .env .env
 
 ENTRYPOINT [ "/usr/local/bin/server" ]
