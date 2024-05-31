@@ -13,6 +13,6 @@ COPY ./ ./
 RUN go build -ldflags="-w -s" -o bin ./cmd
 
 FROM scratch
-COPY --from=builder app/bin /usr/local/bin
+COPY --from=builder app/bin /usr/local/bin/server
 
-ENTRYPOINT [ "/usr/local/bin" ]
+ENTRYPOINT [ "/usr/local/bin/server" ]
