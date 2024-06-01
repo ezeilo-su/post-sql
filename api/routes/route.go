@@ -15,7 +15,6 @@ type Server struct {
 	Ctx          context.Context
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-	// Repository   *repository.Repository
 }
 
 func (s *Server) AddRoutes(repository *repositories.Repository) *http.Server {
