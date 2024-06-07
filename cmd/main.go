@@ -8,16 +8,16 @@ import (
 	"os"
 
 	"github.com/sundayezeilo/post-sql/api/routes"
-	c "github.com/sundayezeilo/post-sql/config"
+	"github.com/sundayezeilo/post-sql/config"
 	"github.com/sundayezeilo/post-sql/internal/db"
 	"github.com/sundayezeilo/post-sql/internal/repositories"
 )
 
 func main() {
-	config := c.Envs
+	cfg := config.LoadEnv()
 	ctx := context.Background()
 
-	store, err := db.NewPostgresDB(ctx, config.PostgresURL)
+	store, err := db.NewPostgresDB(ctx, cfg.PostgresURL)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create DB connection: %v\n", err)
@@ -30,10 +30,10 @@ func main() {
 	pr := repositories.NewPostRepository(store)
 	repos := &repositories.Repository{Post: pr}
 	server := &api.Server{
-		Addr:         config.ServerPort,
+		Addr:         cfg.ServerPort,
 		Ctx:          ctx,
-		ReadTimeout:  config.ReadTimeout,
-		WriteTimeout: config.WriteTimeout,
+		ReadTimeout:  cfg.ReadTimeout,
+		WriteTimeout: cfg.WriteTimeout,
 	}
 
 	httpServer := server.AddRoutes(repos)

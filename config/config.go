@@ -1,4 +1,4 @@
-package configs
+package config
 
 import (
 	"log"
@@ -16,9 +16,7 @@ type Config struct {
 	WriteTimeout time.Duration
 }
 
-var Envs = initConfig()
-
-func initConfig() Config {
+func LoadEnv() Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file ", err)
