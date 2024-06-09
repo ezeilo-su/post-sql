@@ -1,17 +1,18 @@
 version: '3.8'
 
 services:
-  # postgres:
-  #   image: postgres:15.3-alpine
-  #   restart: always
-  #   environment:
-  #     POSTGRES_DB: 'golesson'
-  #     POSTGRES_USER: 'admin'
-  #     POSTGRES_PASSWORD: 'postgres'
-  #   ports:
-  #     - '5432:5432'
-  #   volumes:
-  #     - postgres-db-volume:/var/lib/postgresql/data
+  db:
+    image: postgres:15.3-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: 'golesson'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'postgres'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/golesson/data
+
   app:
     build:
       context: .
@@ -19,15 +20,14 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_URL: $POSTGRES_URL
+      POSTGRES_URL: postgres://admin:postgres@db:5432/golesson?sslmode=disable
       SERVER_PORT: $SERVER_PORT
       READ_TIMEOUT: $READ_TIMEOUT
       WRITE_TIMEOUT: $WRITE_TIMEOUT
     ports:
       - $SERVER_PORT:$SERVER_PORT
-    # network_mode: "host"
     restart: unless-stopped
-    # depends_on:
-    #   - postgres
-# volumes:
-#   postgres-db-volume:
+    depends_on:
+      - db  
+volumes:
+  postgres-db-volume:
